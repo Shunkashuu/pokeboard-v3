@@ -1,8 +1,10 @@
-// var readline = require("readline-sync");
 var toolbox = {
-    // saisieString: function(txt){
-    //     return readline.question(txt);
-    // },
+    saisieString: function(txt){
+        return readline.question(txt);
+    },
+    saisirEntier : function(txt){
+        return parseInt(this.saisieString(txt));
+    },
 
     /**
      * Permet d'initialiser un tableau de tableau en fonction d'un nombre de ligne et de colonne passé en paramètre
@@ -22,4 +24,3 @@ var toolbox = {
         return tab;
     }
 }
-// module.exports = toolbox;
