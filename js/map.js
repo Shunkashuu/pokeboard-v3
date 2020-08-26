@@ -12,15 +12,12 @@ var jeu = {
     nbLigne : 10,
     grille : [],
 
-    nbCaseJ1 : 0,
-    nbCaseJ2 : 0,
-
     // initialisation des éléments et de la grille via la toolbox
     initialisation() {
         this.grille = toolbox.initialiserTableauVide(this.nbLigne,this.nbColonne,0);
         this.positionnerJoueur(1,1);
         this.positionnerJoueur(1,2);
-        this.positionnerObstacles(10, 3)
+        this.positionnerObstacles(15, 3)
         this.positionnerArmes(4, 4)
     },
 
@@ -41,14 +38,14 @@ var jeu = {
     },
 
     // ne fonctionne pas encore, permet de vérifier que les persos ne sont pas cote a cote
-    /*verifCaseJoueur(caseA) {
+    verifCaseJoueur(caseA) {
         if(this.grille[caseA.x+1][caseA.y] === 1 || this.grille[caseA.x-1][caseA.y] === 1 ||
             this.grille[caseA.x][caseA.y+1] === 1 || this.grille[caseA.x][caseA.y-1] === 1 ){
             return true;
         } else {
             return false;
         }
-    },*/
+    },
 
     afficherGrille() {
         const jeu = document.querySelector("#jeu");
@@ -84,15 +81,15 @@ var jeu = {
     },
 
     // positionner les joueurs
-    positionnerJoueur(taille,joueur) {
+    positionnerJoueur(nombre,joueur) {
         var posJoueur = {}; //objet
         var xAlea = 0;
         var yAlea = 0;
         var isCaseVide = true;
         var isCaseJoueur = false;
         
-        for(var i =0 ; i < taille ; i++){
-            xAlea = Math.floor(Math.random() * (this.nbLigne-1));
+        for(var i =0 ; i < nombre ; i++){
+            xAlea = Math.floor(Math.random() * (this.nbLigne-1)); // de base : this.nbLigne(nombre-1) pour prendre en compte bord du tableau et nombre du bateau
             yAlea = Math.floor(Math.random() * (this.nbColonne-1));
         
             posJoueur["case"+i] = this.getCase(xAlea, yAlea);
@@ -112,13 +109,13 @@ var jeu = {
         }
     },
 
-    positionnerObstacles(taille,obstacles) {
+    positionnerObstacles(nombre,obstacles) {
         var posObstacles = {}; //objet
         var xAlea = 0;
         var yAlea = 0;
         var isCaseVide = true;
 
-        for(var i =1 ; i <= taille ; i++){
+        for(var i =1 ; i <= nombre ; i++){
             xAlea = Math.floor(Math.random() * (this.nbLigne-1));
             yAlea = Math.floor(Math.random() * (this.nbColonne-1));
             
@@ -139,13 +136,13 @@ var jeu = {
     },
 
     // il faudra faire un système différent car il y a 4 armes différentes
-    positionnerArmes(taille,armes) {
+    positionnerArmes(nombre,armes) {
         var posArmes = {}; //objet
         var xAlea = 0;
         var yAlea = 0;
         var isCaseVide = true;
 
-        for(var i =1 ; i <= taille ; i++){
+        for(var i =1 ; i <= nombre ; i++){
             xAlea = Math.floor(Math.random() * (this.nbLigne-1));
             yAlea = Math.floor(Math.random() * (this.nbColonne-1));
             
@@ -169,3 +166,10 @@ var jeu = {
 // initialisation de la map
 jeu.initialisation();
 jeu.afficherGrille();
+
+/*les exclure par exemple avec un isset() pour verifier qu'un element existe 
+d'abord tu verifies que la case adjacente a bien des coordonnées 
+(pour exclure les bords) et si c'est bien le cas, 
+tu compares le contenu de ta case avec la condition que tu veux verifier*/
+
+// isset() equivalents en js = soit typeof(), soit hasOwnProperty() soit each()
