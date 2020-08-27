@@ -5,7 +5,7 @@ class Armes {
         this.id = id,
         this.nom = nom,
         this.degats = degats,
-        this.url = url
+        this.url = `./img/${url}.png`;
     }
 }
 

@@ -6,6 +6,9 @@ class Map {
     }
 }
 
+let joueur1 = {};
+let joueur2 = {};
+
 // objet jeu regroupant toutes les fonctions de la map à transformer en class ensuite
 var jeu = {
     nbColonne : 10,
@@ -15,10 +18,13 @@ var jeu = {
     // initialisation des éléments et de la grille via la toolbox
     initialisation() {
         this.grille = toolbox.initialiserTableauVide(this.nbLigne,this.nbColonne,0);
-        this.positionnerJoueur(1,1);
-        this.positionnerJoueur(1,2);
+        this.positionnerJ1(1,1);
+        this.positionnerJ2(1,2);
         this.positionnerObstacles(15, 3)
-        this.positionnerArmes(4, 4)
+        this.positionnerArmes(1, 4)
+        this.positionnerArmes(1, 5)
+        this.positionnerArmes(1, 6)
+        this.positionnerArmes(1, 7)
     },
 
     // fonctions globales, utilisées plusieurs fois
@@ -36,17 +42,7 @@ var jeu = {
             return false;
         } 
     },
-
-    // ne fonctionne pas encore, permet de vérifier que les persos ne sont pas cote a cote
-    verifCaseJoueur(caseA) {
-        if(this.grille[caseA.x+1][caseA.y] === 1 || this.grille[caseA.x-1][caseA.y] === 1 ||
-            this.grille[caseA.x][caseA.y+1] === 1 || this.grille[caseA.x][caseA.y-1] === 1 ){
-            return true;
-        } else {
-            return false;
-        }
-    },
-
+    
     afficherGrille() {
         const jeu = document.querySelector("#jeu");
         jeu.innerHTML = "";
@@ -68,9 +64,17 @@ var jeu = {
                     if(this.grille[i][j]=== 3){
                         content += "<img src='/img/roche.png' style='width:50px;height:50px'/>";
                     }
-                    // pour au moins afficher les armes
                     if(this.grille[i][j]=== 4){
-                        content += "<img src='/img/weapon0.png' style='width:50px;height:50px'/>";
+                        content += "<img src='/img/weapon1.png' style='width:40px;height:40px'/>";
+                    }
+                    if(this.grille[i][j]=== 5){
+                        content += "<img src='/img/weapon2.png' style='width:40px;height:40px'/>";
+                    }
+                    if(this.grille[i][j]=== 6){
+                        content += "<img src='/img/weapon3.png' style='width:40px;height:40px'/>";
+                    }
+                    if(this.grille[i][j]=== 7){
+                        content += "<img src='/img/weapon4.png' style='width:40px;height:40px'/>";
                     }
                     content += "</td>";
                 }
@@ -80,26 +84,49 @@ var jeu = {
         jeu.innerHTML = content;
     },
 
-    // positionner les joueurs
-    positionnerJoueur(nombre,joueur) {
-        var posJoueur = {}; //objet
-        var xAlea = 0;
-        var yAlea = 0;
-        var isCaseVide = true;
-        var isCaseJoueur = false;
-        
+    positionnerJ1(nombre, joueur) {
         for(var i =0 ; i < nombre ; i++){
-            xAlea = Math.floor(Math.random() * (this.nbLigne-1)); // de base : this.nbLigne(nombre-1) pour prendre en compte bord du tableau et nombre du bateau
-            yAlea = Math.floor(Math.random() * (this.nbColonne-1));
-        
-            posJoueur["case"+i] = this.getCase(xAlea, yAlea);
-            isCaseVide = this.verifCaseVide(posJoueur["case"+i]);
-            //isCaseJoueur = this.verifCaseJoueur(posJoueur["case"+i]);
-            if(isCaseVide == true && isCaseJoueur == false) {
+            let xAlea = Math.floor(Math.random() * (this.nbLigne-1)); // de base : this.nbLigne(nombre-1) pour prendre en compte bord du tableau et nombre du bateau
+            let yAlea = Math.floor(Math.random() * (this.nbColonne-1));
+
+            let posJoueur = {};
+                posJoueur["case"+i] = this.getCase(xAlea, yAlea);
+                joueur1 = posJoueur["case"+i];
+                console.log(joueur1);
+
+            let isCaseVide = this.verifCaseVide(posJoueur["case"+i]);
+            if(isCaseVide == true) {
                 this.enregistrerGrilleJoueur(posJoueur,joueur);
-            }else {
+            } else {
                 i--;
-            }    
+            }
+        }
+    },
+
+    positionnerJ2(nombre, joueur) {
+        let i = 0;
+        while(i < nombre) {
+            i = 0;
+            let xAlea = Math.floor(Math.random() * (this.nbLigne-1)); // de base : this.nbLigne(nombre-1) pour prendre en compte bord du tableau et nombre du bateau
+            let yAlea = Math.floor(Math.random() * (this.nbColonne-1));
+        
+            let posJoueur = {};
+            posJoueur["case"+i] = this.getCase(xAlea, yAlea);
+            joueur2 = posJoueur["case"+i];
+
+            let isCaseVide = this.verifCaseVide(posJoueur["case"+i]);
+            console.log(joueur2);
+
+            if(isCaseVide == true && (Math.abs(joueur2.x - joueur1.x) >= 1 
+            && Math.abs(joueur2.y - joueur1.y))) { //verifie l'écart absolue entre les lignes et colonnes des deux joueurs
+                console.log("true");
+                this.enregistrerGrilleJoueur(posJoueur,joueur);
+                i++;
+            } else {
+                console.log(false);
+                joueur2 = [''];
+                i--;
+            }
         }
     },
 
@@ -166,10 +193,3 @@ var jeu = {
 // initialisation de la map
 jeu.initialisation();
 jeu.afficherGrille();
-
-/*les exclure par exemple avec un isset() pour verifier qu'un element existe 
-d'abord tu verifies que la case adjacente a bien des coordonnées 
-(pour exclure les bords) et si c'est bien le cas, 
-tu compares le contenu de ta case avec la condition que tu veux verifier*/
-
-// isset() equivalents en js = soit typeof(), soit hasOwnProperty() soit each()
